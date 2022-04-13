@@ -26,7 +26,7 @@ public class POSTapiTests extends javaUtility {
 
 
     //Path and sheet name of the database(Excel File)
-    String Path_Of_Excel_File = "PostDataBase.xlsx";
+    String Path_Of_Excel_File = "C:\\Users\\priyankverma\\IdeaProjects\\MainAssignment2RestAssured\\PostDataBase2.xlsx";
     String SHEET_NAME_INSIDE_THE_EXCEL = "DataSheet";
 
     //Registering new user with the required details
@@ -60,7 +60,6 @@ public class POSTapiTests extends javaUtility {
                     when().
                     post("/public/v1/users").
                     then().extract();
-            System.out.println("Account registered");
             System.out.println(response.asString());
 
         }
