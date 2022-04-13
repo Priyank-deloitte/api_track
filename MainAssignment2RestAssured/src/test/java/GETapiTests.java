@@ -1,33 +1,37 @@
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
 import java.util.Arrays;
-
-import static java.util.concurrent.CompletableFuture.anyOf;
+import static io.restassured.RestAssured.given;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-
+import static org.hamcrest.core.AnyOf.anyOf;
 
 public class GETapiTests {
 
 
-    @Test
+    @BeforeMethod
     public void get_api() {
-        Response response = RestAssured.get("https://gorest.co.in/public/v1/users");
-
-        System.out.println("Response : " + response.asString());
-        System.out.println("Status code : " + response.statusCode());
-        System.out.println("Header : " + response.getHeader("content-type"));
-
+        given().
+                baseUri("https://gorest.co.in/public/v1").
+                header("Content-Type", "application/json").
+                when().
+                get("/users").
+                then().
+                statusCode(200);
 
     }
 
     @Test
     public void genderValidation(){
-        Response response = RestAssured.get("https://gorest.co.in/public/v1/users");
+        Response response = given().
+                when().
+                get("https://gorest.co.in/public/v1/users").
+                then().extract().response();
 
         JSONObject object = new JSONObject(response.asString());
         JSONArray arr = object.getJSONArray("data");
@@ -40,8 +44,10 @@ public class GETapiTests {
     }
     @Test
     public void emailValidation() {
-        Response response = RestAssured.get("https://gorest.co.in/public/v1/users");
-
+        Response response = given().
+                when().
+                get("https://gorest.co.in/public/v1/users").
+                then().extract().response();
         JSONObject object = new JSONObject(response.asString());
         JSONArray arr = object.getJSONArray("data");
         int count = 0;
@@ -60,8 +66,10 @@ public class GETapiTests {
 
     @Test
     public void uniqueIdValidation(){
-        Response response = RestAssured.get("https://gorest.co.in/public/v1/users");
-
+        Response response = given().
+                when().
+                get("https://gorest.co.in/public/v1/users").
+                then().extract().response();
         JSONObject object = new JSONObject(response.asString());
         JSONArray arr = object.getJSONArray("data");
         int[] idValue = new int[arr.length()];
@@ -80,8 +88,12 @@ public class GETapiTests {
 
     @Test
     public void JsonSchemaValidation(){
-        Response response = RestAssured.get("https://gorest.co.in/public/v1/users");
-        response.body(matchesJsonSchemaInClasspath("JSON_schema.json"));
+        given().
+                when().
+                get("https://gorest.co.in/public/v1/users").
+                then().
+                body(matchesJsonSchemaInClasspath("SampleJsonSchema.json"));
+
 
     }
 
